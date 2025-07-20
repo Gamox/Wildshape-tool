@@ -20,7 +20,7 @@ export default function NavBar() {
 
     return (
         <nav className="bg-gray-900 text-white px-6 py-3 flex items-center justify-between border-b border-gray-700">
-            <div className="text-purple-300 font-bold text-lg">Wildshape Tool</div>
+            <div className="text-purple-300 font-bold text-lg"><Link to="/Wildshape-tool" className="hover:text-purple-400">Wildshape Tool</Link></div>
 
             <div className="flex items-center space-x-6 relative" ref={dropdownRef}>
                 <Link to="/beasts" className="hover:text-purple-400">Compendium</Link>

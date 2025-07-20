@@ -14,6 +14,7 @@ function App() {
         <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/Wildshape-tool" element={<Home />} />
           <Route path="/beasts" element={<Beasts />} />
           <Route path="/collection" element={<Collection />} />
           <Route path="/profile" element={<Profile />} />

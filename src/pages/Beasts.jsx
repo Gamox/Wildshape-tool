@@ -103,7 +103,7 @@ const Beasts = () => {
                 <div
                   key={beast.name}
                   onClick={() => navigate(`/sheet/${encodeURIComponent(beast.name)}`)}
-                  className="cursor-pointer relative bg-gray-800 hover:bg-gray-700 transition rounded-lg border border-gray-700 shadow-sm overflow-hidden flex flex-col justify-between aspect-square p-3"
+                  className="cursor-pointer relative bg-gray-800 hover:bg-gray-700 transition rounded-lg border border-gray-700 shadow-sm overflow-hidden flex flex-col justify-between aspect-rectangle p-3"
                 >
                   <div className="flex flex-col justify-between h-full">
                     <div>
