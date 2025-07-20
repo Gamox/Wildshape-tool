@@ -7,7 +7,6 @@ export default function RollLog({ rolls, onClose }) {
         containerRef.current?.scrollTo(0, containerRef.current.scrollHeight)
     }, [rolls])
 
-    console.log(rolls)
     return (
         <div className="fixed bottom-20 right-4 w-64 max-h-80 bg-gray-800 text-white text-sm rounded shadow-lg border border-gray-600 z-50 flex flex-col overflow-hidden">
             <div className="flex justify-between items-center p-2 bg-gray-700 border-b border-gray-600">

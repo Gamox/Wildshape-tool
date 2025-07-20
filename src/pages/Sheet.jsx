@@ -206,7 +206,7 @@ export default function Sheet() {
                                     const id = Date.now();
                                     setToasts((prev) => [...prev, {
                                         id,
-                                        message: `${s.label}: ${roll} + ${s.value} = ${total}`,
+                                        message: `${s.label}: ${roll} ${s.value >= 0 ? '+' : '-'} ${Math.abs(s.value)} = ${total}`,
                                     }]);
                                     setTimeout(() => {
                                         setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -287,7 +287,13 @@ export default function Sheet() {
             {/* Actions */}
             {renderActionList('Traits', beast.special_abilities)}
             {renderActionList('Actions', beast.actions)}
-            {renderActionList('Bonus Actions', beast.bonus_actions)}
+            {renderActionList('Bonus Actions', [
+                ...(beast.bonus_actions || []),
+                ...(profile.isMoonDruid ? [{
+                    name: 'Combat Wild Shape',
+                    desc: 'Use Wild Shape as a bonus action. Spend a spell slot to regain 1d8 HP per level of the slot.'
+                }] : [])
+            ])}
             {renderActionList('Reactions', beast.reactions)}
             {renderActionList('Legendary Actions', beast.legendary_actions)}
             <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2">

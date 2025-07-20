@@ -1,125 +1,144 @@
-import React, { useState, useEffect } from 'react';
-import data from '../data/beasts.json';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import baseBeasts from '../data/beasts.json';
+import monsters from '../data/monsters.json';
 
-const Beasts = () => {
-  const [filterName, setFilterName] = useState('');
-  const [filterCR, setFilterCR] = useState('All');
-  const [filterType, setFilterType] = useState('beast');
-  const [groupedBeasts, setGroupedBeasts] = useState({});
+export default function Beasts() {
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('Beast'); // Preselect 'Beast'
+  const [crFilter, setCrFilter] = useState('');
+  const [sourceFilter, setSourceFilter] = useState('All');
   const navigate = useNavigate();
 
-  const parseCR = (val) => {
-    if (val == null) return Infinity;
-    const crString = String(val).trim();
-
-    const map = {
-      '0': 0,
-      '1/8': 0.125,
-      '1/6': 0.1667,
-      '1/4': 0.25,
-      '1/3': 0.333,
-      '1/2': 0.5,
-    };
-
-    return map[crString] ?? parseFloat(crString) ?? Infinity;
+  const sources = {
+    SRD: baseBeasts,
+    Monsters: monsters,
   };
 
-  const getCRColor = (cr) => {
-    const num = parseCR(cr);
-    if (isNaN(num)) return 'bg-gray-600';
-    if (num <= 1) return 'bg-green-600';
-    if (num <= 4) return 'bg-yellow-600';
-    return 'bg-red-600';
-  };
-
-  useEffect(() => {
-    const filtered = data.filter((b) => {
-      const matchesName = b.name?.toLowerCase().includes(filterName.toLowerCase());
-      const matchesCR = filterCR === 'All' || b.challenge_rating === filterCR;
-      const matchesType = filterType === 'All' || b.type?.toLowerCase() === filterType.toLowerCase();
-      return matchesName && matchesCR && matchesType;
-    });
-
-    const grouped = {};
-    filtered.forEach((b) => {
-      const cr = b.challenge_rating ?? 'Unknown';
-      if (!grouped[cr]) grouped[cr] = [];
-      grouped[cr].push(b);
-    });
-
-    setGroupedBeasts(grouped);
-  }, [filterName, filterCR, filterType]);
-
-  const allCRs = Array.from(new Set(data.map((b) => b.challenge_rating).filter(Boolean))).sort(
-    (a, b) => parseCR(a) - parseCR(b)
+  const combinedBeasts = Object.entries(sources).flatMap(([source, data]) =>
+    data.map((b) => ({
+      ...b,
+      source,
+      type: b.type ? b.type.charAt(0).toUpperCase() + b.type.slice(1) : 'Unknown',
+    }))
   );
-  const allTypes = Array.from(new Set(data.map((b) => b.type).filter(Boolean))).sort();
+
+  const crOrder = ['0', '1/8', '1/4', '1/2'];
+  for (let i = 1; i <= 30; i++) {
+    crOrder.push(String(i));
+  }
+
+  const filtered = combinedBeasts
+    .filter((b) =>
+      b?.name?.toLowerCase().includes(search.toLowerCase()) &&
+      (typeFilter === 'All' || b.type === typeFilter) &&
+      (crFilter === '' || String(b.challenge_rating) === crFilter) &&
+      (sourceFilter === 'All' || b.source === sourceFilter)
+    )
+    .sort((a, b) => {
+      const aIndex = crOrder.indexOf(String(a.challenge_rating));
+      const bIndex = crOrder.indexOf(String(b.challenge_rating));
+      return aIndex - bIndex;
+    });
+  console.log(crFilter)
+  const groupedByCR = filtered.reduce((acc, beast) => {
+    const cr = String(beast.challenge_rating);
+    if (!acc[cr]) acc[cr] = [];
+    acc[cr].push(beast);
+    return acc;
+  }, {});
+
+  const uniqueTypes = ['All', ...new Set(combinedBeasts.map((b) => b.type))];
+  const uniqueSources = ['All', ...Object.keys(sources)];
+  const uniqueCRs = [...new Set(
+    combinedBeasts
+      .map((b) => String(b.challenge_rating))
+      .filter((cr) => crOrder.includes(cr))
+  )].sort((a, b) => crOrder.indexOf(a) - crOrder.indexOf(b));
+
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Compendium</h1>
-      <div className="flex flex-wrap gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="Filter by name"
-          className="bg-gray-800 text-white px-4 py-2 rounded w-60"
-          value={filterName}
-          onChange={(e) => setFilterName(e.target.value)}
-        />
-        <select
-          className="bg-gray-800 text-white px-4 py-2 rounded w-40"
-          value={filterCR}
-          onChange={(e) => setFilterCR(e.target.value)}
-        >
-          <option value="All">All CR</option>
-          {allCRs.map((cr) => (
-            <option key={cr} value={cr}>
-              CR {cr}
-            </option>
-          ))}
-        </select>
-        <select
-          className="bg-gray-800 text-white px-4 py-2 rounded w-48"
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-        >
-          <option value="All">All Types</option>
-          {allTypes.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
+    <div className="max-w-5xl mx-auto px-4 py-6 text-white">
+      <div className="mb-4 flex flex-wrap gap-4">
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-400 mb-1">Name</label>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-gray-800 px-3 py-1 rounded w-full sm:w-auto"
+            placeholder="Search by name..."
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-400 mb-1">Type</label>
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="bg-gray-800 px-3 py-1 rounded"
+          >
+            {uniqueTypes.map((type) => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-400 mb-1">CR</label>
+          <select
+            value={crFilter}
+            onChange={(e) => setCrFilter(e.target.value)}
+            className="bg-gray-800 px-3 py-1 rounded"
+          >
+            <option value="">All CR</option>
+            {uniqueCRs.map((cr) => (
+              <option key={cr}>{cr}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-400 mb-1">Source</label>
+          <select
+            value={sourceFilter}
+            onChange={(e) => setSourceFilter(e.target.value)}
+            className="bg-gray-800 px-3 py-1 rounded"
+          >
+            {uniqueSources.map((source) => (
+              <option key={source}>{source}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {Object.entries(groupedBeasts)
-        .sort((a, b) => parseCR(a[0]) - parseCR(b[0]))
+      {Object.entries(groupedByCR)
+        .sort(([a], [b]) => crOrder.indexOf(a) - crOrder.indexOf(b))
         .map(([cr, beasts]) => (
           <div key={cr} className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">CR {cr}</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <h2 className="text-xl font-bold text-purple-300 mb-2">CR {cr}</h2>
+            <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {beasts.map((beast) => (
                 <div
-                  key={beast.name}
-                  onClick={() => navigate(`/sheet/${encodeURIComponent(beast.name)}`)}
-                  className="cursor-pointer relative bg-gray-800 hover:bg-gray-700 transition rounded-lg border border-gray-700 shadow-sm overflow-hidden flex flex-col justify-between aspect-rectangle p-3"
+                  key={`${beast.name}-${beast.source}`}
+                  onClick={() =>
+                    navigate(`/sheet/${encodeURIComponent(beast.name)}?source=${encodeURIComponent(beast.source)}`)
+                  }
+                  className="cursor-pointer bg-gray-800 p-3 rounded hover:bg-gray-700 transition"
                 >
-                  <div className="flex flex-col justify-between h-full">
-                    <div>
-                      <h3 className="font-bold text-md mb-1">{beast.name}</h3>
-                      <p className="text-xs text-gray-400">CR: {beast.challenge_rating ?? '—'}</p>
-                      <p className="text-xs text-gray-400">Type: {beast.type ?? '—'}</p>
-                    </div>
-                  </div>
-                  <div className={`absolute top-0 right-0 h-full w-2 ${getCRColor(beast.challenge_rating)}`} />
+                  <h3 className="text-lg font-bold mb-1">{beast.name}</h3>
+                  <p className="text-sm text-gray-400">
+                    {beast.type || 'Unknown'} | CR {beast.challenge_rating}
+                  </p>
+                  <span className="text-xs mt-2 inline-block bg-indigo-700 px-2 py-0.5 rounded text-white">
+                    Source: {beast.source}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
         ))}
+
     </div>
   );
-};
-
-export default Beasts;
+}

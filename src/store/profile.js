@@ -6,19 +6,20 @@ export const useProfileStore = create((set, get) => {
         wis: 10,
         cha: 10,
         level: 1,
+        isMoonDruid: false,
         proficiencyBonus: 2,
         skillProficiencies: {}, // e.g., { Acrobatics: 1 }
     }
 
     const loadProfile = () => {
         const saved = localStorage.getItem('profile')
-        console.log(saved)
         if (saved) {
             try {
                 const parsed = JSON.parse(saved)
 
                 // Fill in defaults if missing
                 if (parsed.level === undefined) parsed.level = 1
+                if (parsed.isMoonDruid === undefined) parsed.isMoonDruid = false
                 if (parsed.proficiencyBonus === undefined) parsed.proficiencyBonus = 2
                 if (parsed.skillProficiencies === undefined) parsed.skillProficiencies = {}
                 return parsed
@@ -33,7 +34,7 @@ export const useProfileStore = create((set, get) => {
         ...loadProfile(),
 
         setLevel: (value) => set(() => ({ level: value })),
-
+        setMoonDruid: (val) => set({ isMoonDruid: val }),
         setStat: (key, value) => set({ [key]: value }),
 
         setSkillProficiency: (skill, level) =>
