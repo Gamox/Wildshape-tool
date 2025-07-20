@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Wildshape-tool/static/css/main.dc485c46.css",
-    "main.js": "/Wildshape-tool/static/js/main.0555126e.js",
+    "main.js": "/Wildshape-tool/static/js/main.01b4ea2f.js",
     "static/js/453.23b390df.chunk.js": "/Wildshape-tool/static/js/453.23b390df.chunk.js",
     "index.html": "/Wildshape-tool/index.html",
     "main.dc485c46.css.map": "/Wildshape-tool/static/css/main.dc485c46.css.map",
-    "main.0555126e.js.map": "/Wildshape-tool/static/js/main.0555126e.js.map",
+    "main.01b4ea2f.js.map": "/Wildshape-tool/static/js/main.01b4ea2f.js.map",
     "453.23b390df.chunk.js.map": "/Wildshape-tool/static/js/453.23b390df.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.dc485c46.css",
-    "static/js/main.0555126e.js"
+    "static/js/main.01b4ea2f.js"
   ]
 }
