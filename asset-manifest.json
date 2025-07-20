@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Wildshape/static/css/main.dc485c46.css",
-    "main.js": "/Wildshape/static/js/main.8ad1be86.js",
-    "static/js/453.23b390df.chunk.js": "/Wildshape/static/js/453.23b390df.chunk.js",
-    "index.html": "/Wildshape/index.html",
-    "main.dc485c46.css.map": "/Wildshape/static/css/main.dc485c46.css.map",
-    "main.8ad1be86.js.map": "/Wildshape/static/js/main.8ad1be86.js.map",
-    "453.23b390df.chunk.js.map": "/Wildshape/static/js/453.23b390df.chunk.js.map"
+    "main.css": "/Wildshape-tool/static/css/main.dc485c46.css",
+    "main.js": "/Wildshape-tool/static/js/main.0555126e.js",
+    "static/js/453.23b390df.chunk.js": "/Wildshape-tool/static/js/453.23b390df.chunk.js",
+    "index.html": "/Wildshape-tool/index.html",
+    "main.dc485c46.css.map": "/Wildshape-tool/static/css/main.dc485c46.css.map",
+    "main.0555126e.js.map": "/Wildshape-tool/static/js/main.0555126e.js.map",
+    "453.23b390df.chunk.js.map": "/Wildshape-tool/static/js/453.23b390df.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.dc485c46.css",
-    "static/js/main.8ad1be86.js"
+    "static/js/main.0555126e.js"
   ]
 }
